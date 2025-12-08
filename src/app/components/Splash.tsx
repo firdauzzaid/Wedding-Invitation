@@ -8,9 +8,8 @@ import { motion } from "framer-motion";
 export default function Splash({ children }: { children: React.ReactNode }) {
   const [show, setShow] = useState(false);
 
-  // Render splash hanya di client
   useEffect(() => {
-    setShow(true); // aktifkan setelah mount
+    setShow(true);
     const timer = setTimeout(() => setShow(false), 2000);
     return () => clearTimeout(timer);
   }, []);
@@ -25,14 +24,19 @@ export default function Splash({ children }: { children: React.ReactNode }) {
       className="fixed inset-0 z-[9999] flex items-center justify-center flex-col bg-white overflow-hidden"
       suppressHydrationWarning
     >
-      {/* Background Image */}
+      {/* Background yang nge-blend */}
       <div
-        className="absolute inset-0 bg-cover bg-center mix-blend-soft-light opacity-80"
+        className="
+          absolute inset-0 
+          bg-cover bg-center 
+          mix-blend-overlay 
+          opacity-70
+        "
         style={{ backgroundImage: "url('/images/download.jpeg')" }}
       />
 
-      {/* Mask */}
-      <div className="absolute inset-0 bg-white/40 backdrop-blur-sm" />
+      {/* Soft white mist, biar premium */}
+      <div className="absolute inset-0 bg-white/20 backdrop-blur-[1px]" />
 
       {/* Title */}
       <motion.h1
@@ -44,7 +48,7 @@ export default function Splash({ children }: { children: React.ReactNode }) {
         Undangan Pernikahan
       </motion.h1>
 
-      {/* Loading Bar */}
+      {/* Loading bar */}
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: "90%" }}

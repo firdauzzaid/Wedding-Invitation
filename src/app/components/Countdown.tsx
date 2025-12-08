@@ -2,16 +2,22 @@
 
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Countdown() {
-  const target = new Date("2025-06-18T00:00:00").getTime();
+  const target = new Date("2026-01-02T00:00:00").getTime();
   const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0 });
 
   useEffect(() => {
     const tick = setInterval(() => {
       const now = Date.now();
       const diff = target - now;
+
+      if (diff <= 0) {
+        setTime({ d: 0, h: 0, m: 0, s: 0 });
+        return;
+      }
 
       setTime({
         d: Math.floor(diff / (1000 * 60 * 60 * 24)),
@@ -24,26 +30,40 @@ export default function Countdown() {
     return () => clearInterval(tick);
   }, []);
 
+  const labels: Record<string, string> = {
+    d: "Hari",
+    h: "Jam",
+    m: "Menit",
+    s: "Detik",
+  };
+
   return (
-    <section id="countdown" className="py-10 text-center fade-in">
-      <h2 className="text-2xl font-bold mb-6 text-[#4a3f35]">
-        Menuju Hari Bahagia
+    <section id="countdown" className="pt-10 pb-6 text-center fade-in">
+      <h2 className="text-xl font-semibold mb-4 text-[#4a3f35] tracking-wide">
+        Hitungan Menuju Hari Bahagia
       </h2>
 
       <div className="flex justify-center gap-3">
-        {Object.entries(time).map(([label, value]) => (
+        {Object.entries(time).map(([key, value]) => (
           <div
-            key={label}
-            className="bg-white/80 border border-[#d4af37]/40 
+            key={key}
+            className="bg-white/70 border border-[#d4af37]/40 
                        rounded-xl w-20 py-3 shadow-md"
           >
-            <div className="text-xl font-bold text-[#4a3f35]">{value}</div>
-            <div className="text-[10px] text-[#86755a] tracking-wide">
-              {label.toUpperCase()}
+            <div className="text-2xl font-bold text-[#4a3f35]">{value}</div>
+            <div className="text-[11px] text-[#86755a] tracking-wide">
+              {labels[key]}
             </div>
           </div>
         ))}
       </div>
+
+      <Link
+        href="/details"
+        className="inline-block mt-16 bg-[#d4af37] text-black px-6 py-2 rounded-full font-semibold shadow-lg text-sm hover:shadow-xl transition"
+      >
+        Lihat Undangan
+      </Link>
     </section>
   );
 }

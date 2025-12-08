@@ -1,51 +1,36 @@
 // src/app/components/Hero.tsx
 
-import { playfair, inter, arabic } from '../fonts';
+import { playfair } from '../fonts';
 
 export default function Hero() {
   return (
-    <section className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-center overflow-hidden">
-      <div className="relative z-10 px-4">
+    <section className="relative w-full flex items-start justify-center text-center overflow-hidden pb-10">
+      <div className="relative z-10 px-4 flex flex-col items-center">
 
-        {/* Bismillah Arabic */}
-        <h2
-          className={`${arabic.className} text-3xl md:text-4xl text-[#d4af37] mb-20 leading-relaxed tracking-wide`}
-        >
-          بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ
-        </h2>
+        {/* Bismillah PNG */}
+        <img
+          src="/images/bismillah.png"
+          alt="Bismillah"
+          className="w-40 md:w-52 opacity-90"
+        />
 
-        {/* Bismillah Image */}
-        {/* <div className="flex justify-center mb-6">
-          <img
-            src="/bismillah.png"
-            alt="Bismillah"
-            className="w-40 md:w-48 object-contain opacity-90"
-          />
-        </div> */}
-
-        {/* Nama pengantin */}
+        {/* Nama pengantin dengan jarak besar */}
         <h1
-          className={`${playfair.className} text-4xl md:text-6xl font-bold text-[#d4af37] drop-shadow-lg leading-tight`}
+          className={`${playfair.className}
+            text-4xl md:text-6xl
+            font-bold
+            text-[#d4af37]
+            drop-shadow-lg
+            leading-[1.3]
+            mt-6 md:mt-12
+            mb-4 md:mb-6
+          `}
         >
-          Zhafron Firdaus
-          <br />&<br />
-          Annisa Zahra
+          <span className="block mb-3">Zhafron Firdaus</span>
+          <span className="block text-3xl md:text-4xl mb-3">&amp;</span>
+          <span className="block mt-3">Annisa Zahra</span>
         </h1>
 
-        {/* Deskripsi */}
-        <p
-          className={`${inter.className} text-black mt-4 text-sm md:text-base tracking-wide`}
-        >
-          Kami mengundang Anda ke hari spesial kami
-        </p>
-
-        {/* Button */}
-        <a
-          href="#details"
-          className="inline-block mt-8 bg-[#d4af37] text-black px-6 py-2 rounded-full font-semibold shadow-lg text-sm hover:shadow-xl transition"
-        >
-          Lihat Undangan
-        </a>
       </div>
     </section>
   );

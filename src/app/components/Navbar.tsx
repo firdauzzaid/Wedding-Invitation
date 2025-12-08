@@ -8,20 +8,14 @@ import { usePathname } from 'next/navigation';
 const navItems = [
   { href: '/home', label: 'Home' },
   { href: '/details', label: 'Detail' },
-  { href: '/rsvp', label: 'RSVP' },
-  { href: '/guestbook', label: 'Buku Tamu' },
+  { href: '/guestbook', label: 'Guest Book' },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <div
-      className="
-        fixed top-0 left-0 right-0 z-50
-        backdrop-blur-xl bg-white/40 border-b border-[#d4af37]/30 shadow-sm
-      "
-    >
+    <div className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/40 border-b border-[#d4af37]/30 shadow-sm">
       <div className="flex justify-around py-3 text-sm font-medium">
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);

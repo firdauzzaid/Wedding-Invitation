@@ -3,9 +3,9 @@
 import { MapPin } from "lucide-react";
 
 export default function MapLocation() {
-  const lat = -6.123456;
-  const lng = 106.987654;
-
+  const lat = -7.8057640497607235;
+  const lng = 110.36526644065994;
+  
   // FREE — no API key required
   const mapsEmbed = `https://www.google.com/maps?q=${lat},${lng}&z=15&output=embed`;
 
