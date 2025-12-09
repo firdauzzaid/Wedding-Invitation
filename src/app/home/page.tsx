@@ -2,6 +2,7 @@
 
 import Hero from "@/app/components/Hero";
 import Countdown from "@/app/components/Countdown";
+import SwipeHint from "@/app/components/SwipeHint";
 
 export default function Page() {
   return (
@@ -24,6 +25,7 @@ export default function Page() {
         "
       >
         <Hero />
+        <SwipeHint />
         <Countdown />
       </div>
 
