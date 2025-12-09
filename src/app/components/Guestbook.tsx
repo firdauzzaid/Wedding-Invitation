@@ -4,16 +4,17 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/app/lib/supabase";
-import { inter } from "../fonts";
+import { inter, greatVibes } from "../fonts";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Guestbook() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Load awal + realtime
   useEffect(() => {
     loadMessages();
 
@@ -43,78 +44,107 @@ export default function Guestbook() {
     setLoading(false);
   }
 
-  async function submitMessage(e: any) {
+  async function submitMessage(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !message.trim()) return;
+    if (!name.trim() || !message.trim()) {
+      toast.error("Nama dan pesan wajib diisi");
+      return;
+    }
 
-    const { error } = await supabase
+    setSubmitting(true);
+    const { data, error } = await supabase
       .from("guestbook")
-      .insert([{ name, message }]);
+      .insert([{ name, message }])
+      .select();
+    setSubmitting(false);
 
-    if (!error) {
-      toast.success("Ucapan berhasil dikirim");
+    if (error) {
+      toast.error("Failed send a message");
+    } else {
+      toast.success("Message successfully sent");
+      if (data && data.length > 0) {
+        setMessages((prev) => [data[0], ...prev]);
+      }
       setMessage("");
+      setName("");
     }
   }
 
   return (
-    <section className="py-4 px-3 w-full flex flex-col items-center">
+    <section className="py-4 px-2 w-full flex flex-col items-center">
+      {/* Title */}
+      <p
+        className={`${greatVibes.className} text-2xl md:text-3xl text-[#b89452] mb-8 tracking-wide`}
+      >
+        Send your special messages
+      </p>
+
       {/* FORM */}
       <form
         onSubmit={submitMessage}
-        className="w-full max-w-md space-y-4 bg-white/60 backdrop-blur-lg 
-        border border-[#d4af37]/40 rounded-xl p-4 shadow-md"
+        className="w-full max-w-2xl space-y-3"
       >
         <input
           type="text"
-          placeholder="Nama"
+          placeholder="Your Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className={`${inter.className} w-full px-3 py-3 rounded-md 
+          className={`${greatVibes.className} w-full px-4 py-3 rounded-lg 
           bg-white border border-[#d4af37]/40 text-black
-          focus:outline-none focus:border-[#d4af37]`}
+          focus:outline-none focus:border-[#d4af37] shadow-sm`}
         />
 
         <textarea
-          placeholder="Ucapan"
+          placeholder="Please, wrote your message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className={`${inter.className} w-full px-3 py-3 rounded-md 
-          bg-white border border-[#d4af37]/40 text-black h-28 resize-none
-          focus:outline-none focus:border-[#d4af37]`}
+          className={`${greatVibes.className} w-full px-4 py-3 rounded-lg 
+          bg-white border border-[#d4af37]/40 text-black h-32 resize-none
+          focus:outline-none focus:border-[#d4af37] shadow-sm`}
         ></textarea>
 
         <button
-          className={`${inter.className} w-full py-3 rounded-md bg-[#d4af37] 
-          text-black font-semibold shadow-lg hover:shadow-xl transition`}
+          disabled={submitting}
+          className={`${greatVibes.className} w-full py-3 rounded-lg bg-[#d4af37] 
+          text-black font-semibold shadow-lg hover:shadow-xl transition disabled:opacity-50`}
         >
-          Kirim Ucapan
+          {submitting ? "Sending..." : "Send"}
         </button>
       </form>
 
       {/* GARIS PEMBATAS */}
-      <div className="w-full max-w-md my-4 border-t border-[#d4af37]/40"></div>
+      <div className="w-full max-w-2xl my-6 border-t border-[#d4af37]/40"></div>
 
       {/* LIST (SCROLLABLE) */}
       <div
-        className="w-full max-w-md space-y-2.5 max-h-[380px] overflow-y-auto 
-        pr-1"
+        className="w-full max-w-2xl space-y-4 max-h-[420px] overflow-y-auto 
+        pr-2"
       >
         {loading ? (
-          <div className="text-center text-black/50">Memuat ucapan...</div>
+          <div className={`${greatVibes.className} text-black/50 text-center font-semibold shadow-lg hover:shadow-xl`}>Loading data...</div>
         ) : messages.length === 0 ? (
-          <div className="text-center text-black/50">Belum ada ucapan.</div>
+          <div className={`${greatVibes.className} text-black/50 text-center font-semibold shadow-lg hover:shadow-xl`}>No data yet.</div>
         ) : (
-          messages.map((msg) => (
-            <div
-              key={msg.id}
-              className="bg-white/70 animate-fade backdrop-blur-lg border border-[#d4af37]/40 
-              rounded-xl p-4 shadow-sm"
-            >
-              <div className="font-semibold text-black">{msg.name}</div>
-              <div className="text-black/80 text-sm mt-1">{msg.message}</div>
-            </div>
-          ))
+          <AnimatePresence>
+            {messages.map((msg) => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.4 }}
+                className="bg-white/80 backdrop-blur-lg border border-[#d4af37]/40 
+                rounded-xl p-5 shadow-md"
+              >
+                <div className={`${greatVibes.className} text-[#4a3f35] text-lg font-semibold`}>
+                  {msg.name}
+                </div>
+                <div className={`${greatVibes.className} text-[#4a3f35] text-sm mt-2 leading-relaxed font-semibold`}>
+                  {msg.message}
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
     </section>

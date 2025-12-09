@@ -2,6 +2,12 @@
 
 import { Playfair_Display, Inter } from 'next/font/google';
 import { Scheherazade_New } from "next/font/google";
+import { Great_Vibes } from "next/font/google";
+
+export const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 export const playfair = Playfair_Display({
   subsets: ['latin'],

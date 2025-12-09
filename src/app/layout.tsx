@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Splash from './components/Splash';
 import PageTransition from './components/PageTransition';
 import SwipeLayout from './components/SwipeLayout';
+import { Toaster } from "sonner";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,7 +16,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Splash>
           <SwipeLayout>
             <main className="pt-14 min-h-screen md:pt-16 md:pb-4">
-              <PageTransition>{children}</PageTransition>
+              <PageTransition>
+                {children}
+                <Toaster richColors position="top-center" />
+                </PageTransition>
             </main>
           </SwipeLayout>
         </Splash>
@@ -27,7 +31,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         {/* Footer */}
         <footer className="text-center text-[#d4af37]/70 text-xs md:text-sm py-2">
-          © 2025 by Znonymous. All rights reserved.
+          <span className="cursor-pointer hover:underline hover:text-[#d4af37] transition-colors duration-300">
+            © 2025 by Me. All rights reserved.
+          </span>
         </footer>
       </body>
     </html>
