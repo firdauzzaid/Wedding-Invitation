@@ -1,35 +1,42 @@
 // src/app/api/send-attendance/route.ts
 
-import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
-import FormData from "form-data";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { name, guests, attendance, note } = await req.json();
+    const body = await req.json();
 
-    const message = `
-Nama: ${name}
-Jumlah Tamu: ${guests}
-Kehadiran: ${attendance}
-Catatan: ${note || "-"}
-    `.trim();
+    const WAPhone = process.env.MY_PHONE;
+    const token = process.env.FONNTE_API_KEY;
 
-    const form = new FormData();
-    form.append("target", process.env.MY_PHONE!);
-    form.append("message", message);
-    form.append("countryCode", "62");
+    const message =
+`*Konfirmasi Kehadiran & Guestbook Baru*
+--------------------------------------
+Nama: ${body.name}
+Jumlah Tamu: ${body.guests}
+Status Kehadiran: ${body.attendance}
+Pesan Spesial:
+${body.message || "-"}
+--------------------------------------
+(Wedding Guest System)
+`;
 
-    const resp = await axios.post("https://api.fonnte.com/send", form, {
-      headers: {
-        Authorization: process.env.FONNTE_API_KEY!,
-        ...form.getHeaders(),
+    await axios.post(
+      "https://api.fonnte.com/send",
+      {
+        target: WAPhone,
+        message,
       },
-    });
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
 
-    return NextResponse.json({ success: true, data: resp.data });
-  } catch (err: any) {
-    console.error("Gagal mengirim via Fonnte:", err.response?.data || err.message);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return Response.json({ ok: true });
+  } catch (error) {
+    console.error(error);
+    return Response.json({ ok: false, error }, { status: 500 });
   }
 }

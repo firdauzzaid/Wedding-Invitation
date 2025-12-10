@@ -6,26 +6,13 @@ import SwipeHint from "@/app/components/SwipeHint";
 
 export default function Page() {
   return (
-    <div className="
-      min-h-screen 
-      pt-4 pb-20 px-4 
-      max-w-xl mx-auto 
-      flex 
-      justify-start
-    ">
+    <div className="min-h-screen pt-4 pb-20 px-4 max-w-xl mx-auto flex justify-start">
       
+      <SwipeHint />
       {/* SINGLE CARD FULL HEIGHT */}
       <div
-        className="
-          glass rounded-2xl p-6 shadow-xl space-y-10 
-          w-full
-          min-h-[calc(100vh-150px)]
-          flex flex-col
-          justify-start
-        "
-      >
+        className="glass rounded-2xl p-6 shadow-xl space-y-10 w-full min-h-[calc(100vh-150px)] flex flex-col justify-start">
         <Hero />
-        <SwipeHint />
         <Countdown />
       </div>
 

@@ -3,28 +3,18 @@
 "use client";
 
 import './globals.css';
-import dynamic from "next/dynamic";
 import Navbar from './components/Navbar';
 import Splash from './components/Splash';
 import PageTransition from './components/PageTransition';
 import SwipeLayout from './components/SwipeLayout';
 import { Toaster } from "sonner";
 
-// Import GuestConfirmation secara dynamic, hanya client-side
-const GuestConfirmation = dynamic(
-  () => import("./components/GuestConfirmation"),
-  { ssr: false }
-);
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-gradient-to-b from-[#faf7f2] via-[#f7f2eb] to-[#f4ede3] text-[#4a3f35] overflow-x-hidden font-sans">
 
-        {/* Guest Confirmation floating bottom */}
-        <GuestConfirmation />
-
-        {/* Splash dan Home tetap muncul */}
+        {/* Splash dan Home */}
         <Splash>
           <SwipeLayout>
             <main className="pt-14 min-h-screen md:pt-16 md:pb-4">

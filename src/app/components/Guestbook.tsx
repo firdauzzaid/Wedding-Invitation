@@ -2,151 +2,110 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
-import { supabase } from "@/app/lib/supabase";
-import { inter, greatVibes } from "../fonts";
+import { useState } from "react";
 import { toast } from "sonner";
-import { motion, AnimatePresence } from "framer-motion";
 
-export default function Guestbook() {
-  const [name, setName] = useState("");
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+export default function GuestConfirmationPage() {
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    loadMessages();
+  const [form, setForm] = useState({
+    name: "",
+    guests: 1,
+    attendance: "Hadir",
+    message: "",
+  });
 
-    const channel = supabase
-      .channel("guestbook-changes")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "guestbook" },
-        (payload) => {
-          setMessages((prev) => [payload.new, ...prev]);
-        }
-      )
-      .subscribe();
+  const handleChange = (key: string, value: any) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const handleSubmit = async () => {
+    if (!form.name) return toast.error("Nama wajib diisi");
 
-  async function loadMessages() {
-    const { data } = await supabase
-      .from("guestbook")
-      .select("*")
-      .order("id", { ascending: false });
+    setLoading(true);
+    try {
+      const res = await fetch("/api/send-attendance", {
+        method: "POST",
+        body: JSON.stringify(form),
+      });
 
-    setMessages(data || []);
+      if (!res.ok) throw new Error();
+
+      toast.success("Terima kasih! Pesan Anda telah dikirim.");
+      setForm({ name: "", guests: 1, attendance: "Hadir", message: "" });
+    } catch (err) {
+      toast.error("Gagal mengirim, coba lagi.");
+    }
     setLoading(false);
-  }
-
-  async function submitMessage(e: React.FormEvent) {
-    e.preventDefault();
-    if (!name.trim() || !message.trim()) {
-      toast.error("Nama dan pesan wajib diisi");
-      return;
-    }
-
-    setSubmitting(true);
-    const { data, error } = await supabase
-      .from("guestbook")
-      .insert([{ name, message }])
-      .select();
-    setSubmitting(false);
-
-    if (error) {
-      toast.error("Failed send a message");
-    } else {
-      toast.success("Message successfully sent");
-      if (data && data.length > 0) {
-        setMessages((prev) => [data[0], ...prev]);
-      }
-      setMessage("");
-      setName("");
-    }
-  }
+  };
 
   return (
-    <section className="py-4 px-2 w-full flex flex-col items-center">
-      {/* Title */}
-      <p
-        className={`${greatVibes.className} text-2xl md:text-3xl text-[#b89452] mb-8 tracking-wide`}
-      >
-        Send your special messages
-      </p>
+      <div className="w-full max-w-xl bg-white shadow-xl rounded-2xl p-8 border border-[#e4dac7]">
 
-      {/* FORM */}
-      <form
-        onSubmit={submitMessage}
-        className="w-full max-w-2xl space-y-3"
-      >
-        <input
-          type="text"
-          placeholder="Your Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className={`${greatVibes.className} w-full px-4 py-3 rounded-lg 
-          bg-white border border-[#d4af37]/40 text-black
-          focus:outline-none focus:border-[#d4af37] shadow-sm`}
-        />
+        <h1 className="text-2xl font-serif text-center mb-2 text-[#6f5e4e]">
+          Konfirmasi Kehadiran
+        </h1>
+        <p className="text-center text-gray-600 mb-6">
+          Silakan isi formulir di bawah ini
+        </p>
 
-        <textarea
-          placeholder="Please, wrote your message..."
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className={`${greatVibes.className} w-full px-4 py-3 rounded-lg 
-          bg-white border border-[#d4af37]/40 text-black h-32 resize-none
-          focus:outline-none focus:border-[#d4af37] shadow-sm`}
-        ></textarea>
+        <div className="space-y-4">
 
-        <button
-          disabled={submitting}
-          className={`${greatVibes.className} w-full py-3 rounded-lg bg-[#d4af37] 
-          text-black font-semibold shadow-lg hover:shadow-xl transition disabled:opacity-50`}
-        >
-          {submitting ? "Sending..." : "Send"}
-        </button>
-      </form>
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Nama</label>
+            <input
+              type="text"
+              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-[#d4af37]"
+              value={form.name}
+              onChange={(e) => handleChange("name", e.target.value)}
+            />
+          </div>
 
-      {/* GARIS PEMBATAS */}
-      <div className="w-full max-w-2xl my-6 border-t border-[#d4af37]/40"></div>
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Jumlah Tamu</label>
+            <input
+              type="number"
+              min={1}
+              className="w-full p-3 border rounded-xl"
+              value={form.guests}
+              onChange={(e) => handleChange("guests", Number(e.target.value))}
+            />
+          </div>
 
-      {/* LIST (SCROLLABLE) */}
-      <div
-        className="w-full max-w-2xl space-y-4 max-h-[420px] overflow-y-auto 
-        pr-2"
-      >
-        {loading ? (
-          <div className={`${greatVibes.className} text-black/50 text-center font-semibold shadow-lg hover:shadow-xl`}>Loading data...</div>
-        ) : messages.length === 0 ? (
-          <div className={`${greatVibes.className} text-black/50 text-center font-semibold shadow-lg hover:shadow-xl`}>No data yet.</div>
-        ) : (
-          <AnimatePresence>
-            {messages.map((msg) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.4 }}
-                className="bg-white/80 backdrop-blur-lg border border-[#d4af37]/40 
-                rounded-xl p-5 shadow-md"
-              >
-                <div className={`${greatVibes.className} text-[#4a3f35] text-lg font-semibold`}>
-                  {msg.name}
-                </div>
-                <div className={`${greatVibes.className} text-[#4a3f35] text-sm mt-2 leading-relaxed font-semibold`}>
-                  {msg.message}
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        )}
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">Kehadiran</label>
+            <select
+              className="w-full p-3 border rounded-xl"
+              value={form.attendance}
+              onChange={(e) => handleChange("attendance", e.target.value)}
+            >
+              <option>Hadir</option>
+              <option>Berhalangan hadir</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium text-gray-700">
+              Pesan Spesial / Guestbook
+            </label>
+            <textarea
+              rows={4}
+              className="w-full p-3 border rounded-xl"
+              value={form.message}
+              onChange={(e) => handleChange("message", e.target.value)}
+            />
+          </div>
+
+          <button
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full py-3 mt-2 bg-gradient-to-r from-[#d4af37] to-[#b8913f] text-white rounded-xl font-semibold shadow-lg disabled:opacity-50"
+          >
+            {loading ? "Mengirim..." : "Kirim ke WhatsApp"}
+          </button>
+
+        </div>
       </div>
-    </section>
+    
   );
 }
