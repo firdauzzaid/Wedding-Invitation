@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { MapPin, Calendar, Clock } from "lucide-react";
 
 const playfairStyle = {
-  fontFamily: 'Playfair Display, serif'
+  fontFamily: "Playfair Display, serif",
 };
 
 export default function Details() {
@@ -30,7 +30,7 @@ export default function Details() {
   ];
 
   return (
-    <section className="w-full space-y-8 py-12">
+    <section className="w-full space-y-8 pt-12 pb-4">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -43,16 +43,18 @@ export default function Details() {
           <div className="w-2 h-2 rounded-full bg-[#d4af37]" />
           <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-[#d4af37]" />
         </div>
-        
+
         <div>
-          <h3 className="text-3xl font-bold text-[#4a3f35] tracking-wide" style={playfairStyle}
-        >
-          Detail Acara
-        </h3>
-        
-        <p className="text-sm text-[#86755a] mt-2 italic">
-          Dengan memohon rahmat dan ridho Allah SWT
-        </p>
+          <h3
+            className="text-3xl font-bold text-[#4a3f35] tracking-wide"
+            style={playfairStyle}
+          >
+            Detail Acara
+          </h3>
+
+          <p className="text-sm text-[#86755a] mt-2 italic">
+            Dengan memohon rahmat dan ridho Allah SWT
+          </p>
         </div>
       </motion.div>
 
@@ -64,8 +66,7 @@ export default function Details() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.2 }}
-            className="relative bg-gradient-to-br from-[#d4af37]/10 to-transparent rounded-2xl p-6 border border-[#d4af37]/20 p-6 shadow-lg hover:shadow-xl transition-all duration-300
-                       hover:scale-[1.02] flex flex-col items-center gap-4"
+            className="relative bg-gradient-to-br from-[#d4af37]/10 to-transparent rounded-2xl border border-[#d4af37]/20 p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex flex-col items-center gap-4"
           >
             {/* Icon */}
             <div className="text-4xl mb-3 text-center">{event.icon}</div>
