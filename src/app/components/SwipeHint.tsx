@@ -3,87 +3,131 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export default function SwipeHint() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const seen = localStorage.getItem("swipeHintSeenV2");
-
-    if (!seen) {
+    // Show hint after page load
+    const timer = setTimeout(() => {
       setVisible(true);
+    }, 600);
 
-      const timer = setTimeout(() => {
-        setVisible(false);
-        localStorage.setItem("swipeHintSeenV2", "true");
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 600);
-    return () => clearTimeout(timer);
-  }, []);
+    if (visible) {
+      // Auto hide after 5 seconds
+      const hideTimer = setTimeout(() => {
+        setVisible(false);
+      }, 5000);
+
+      return () => clearTimeout(hideTimer);
+    }
+  }, [visible]);
 
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-[999] flex items-center justify-center">
-      <div className="text-center">
-
-        {/* TEXT */}
-        <p className="text-white drop-shadow-lg font-semibold mb-4 text-lg">
-          Geser kanan / kiri untuk pindah halaman
-        </p>
-
-        {/* ICON SWIPE (REPLACE IMAGE) */}
-        <div className="flex justify-center mb-6 animate-swipe-horizontal">
-          <svg
-            viewBox="0 0 100 24"
-            className="w-32 h-10 text-white opacity-90"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-          >
-            {/* Left arrow */}
-            <path d="M30 12 H5 M10 7 L5 12 L10 17" strokeLinecap="round" strokeLinejoin="round" />
-
-            {/* Right arrow */}
-            <path d="M70 12 H95 M90 7 L95 12 L90 17" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[999] flex items-center justify-center"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className="text-center px-6"
+      >
+        {/* Decorative top border */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-white/50" />
+          <div className="w-3 h-3 border-2 border-white/50 rotate-45 mx-4" />
+          <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-white/50" />
         </div>
 
-        {/* BUTTON */}
-        <button
-          onClick={() => {
-            setVisible(false);
-            localStorage.setItem("swipeHintSeenV2", "true");
-          }}
-          className="px-6 py-2 rounded-full border border-white/70 text-white font-semibold backdrop-blur-sm bg-white/10 hover:bg-white/20 transition"
+        {/* TEXT */}
+        <motion.p
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="text-white drop-shadow-lg font-semibold mb-6 text-lg tracking-wide"
         >
-          Mengerti
-        </button>
-      </div>
+          Geser kanan / kiri untuk pindah halaman
+        </motion.p>
 
-      {/* ANIMATION */}
-      <style jsx>{`
-        @keyframes swipe-horizontal {
-          0% {
-            transform: translateX(0);
-          }
-          50% {
-            transform: translateX(12px);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-        .animate-swipe-horizontal {
-          animation: swipe-horizontal 1.4s ease-in-out infinite;
-        }
-      `}</style>
-    </div>
+        {/* ICON SWIPE with enhanced animation */}
+        <motion.div
+          animate={{
+            x: [0, 15, 0, -15, 0],
+          }}
+          transition={{
+            duration: 2.5,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="flex justify-center mb-8"
+        >
+          <svg
+            viewBox="0 0 120 30"
+            className="w-40 h-12 text-white opacity-90"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+          >
+            {/* Left arrow */}
+            <path
+              d="M35 15 H5 M10 9 L5 15 L10 21"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {/* Center dots */}
+            <circle cx="50" cy="15" r="2" fill="currentColor" />
+            <circle cx="60" cy="15" r="2" fill="currentColor" />
+            <circle cx="70" cy="15" r="2" fill="currentColor" />
+
+            {/* Right arrow */}
+            <path
+              d="M85 15 H115 M110 9 L115 15 L110 21"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </motion.div>
+
+        {/* BUTTON with elegant styling */}
+        <motion.button
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setVisible(false)}
+          className="relative px-8 py-3 rounded-full border-2 border-white/70 text-white font-semibold 
+                     backdrop-blur-md bg-white/10 hover:bg-white/20 transition-all duration-300
+                     shadow-lg hover:shadow-xl overflow-hidden group"
+        >
+          <span className="relative z-10">Mengerti</span>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-[#d4af37]/20 to-transparent"
+            initial={{ x: "-100%" }}
+            whileHover={{ x: "100%" }}
+            transition={{ duration: 0.6 }}
+          />
+        </motion.button>
+
+        {/* Decorative bottom border */}
+        <div className="flex items-center justify-center mt-6">
+          <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-white/50" />
+          <div className="w-3 h-3 border-2 border-white/50 rotate-45 mx-4" />
+          <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-white/50" />
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
