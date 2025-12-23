@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // Font configuration (Playfair Display)
 const playfairStyle = {
-  fontFamily: 'Playfair Display, serif'
+  fontFamily: "Playfair Display, serif",
 };
 
 // Komponen Hero
@@ -22,15 +22,16 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-6"
         >
-          <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto mb-3" />
-          <svg className="w-48 mx-auto" viewBox="0 0 200 40" fill="none">
-            <img 
-            src="../images/bismillah.png" 
-            alt="Bismillah" 
-            className="w-48 h-auto mx-auto opacity-90"
-          />
-          </svg>
-          <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto mt-3" />
+          <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto" />
+          <div className="w-56 h-36 mx-auto overflow-hidden">
+            <img
+              src="/images/bismillah.png"
+              alt="Bismillah"
+              className="w-full h-full object-cover opacity-90"
+            />
+          </div>
+
+          <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto" />
         </motion.div>
 
         {/* QUOTE */}
@@ -40,8 +41,8 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-sm text-[#86755a] italic mb-8 max-w-md leading-relaxed"
         >
-          "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan
-          untukmu pasangan hidup dari jenismu sendiri"
+          "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu
+          pasangan hidup dari jenismu sendiri"
         </motion.p>
 
         {/* NAMES dengan animasi */}
