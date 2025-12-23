@@ -3,7 +3,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function Countdown() {
   const target = new Date("2026-01-02T00:00:00").getTime();
@@ -20,8 +20,8 @@ export default function Countdown() {
 
       if (diff <= 0) {
         setTime({ d: 0, h: 0, m: 0, s: 0 });
-        setFinished(true);      // tandai countdown selesai
-        clearInterval(tick);    // hentikan interval
+        setFinished(true);
+        clearInterval(tick);
         return;
       }
 
@@ -36,7 +36,7 @@ export default function Countdown() {
     return () => clearInterval(tick);
   }, []);
 
-  if (!mounted) return null; // agar SSR aman
+  if (!mounted) return null;
 
   const labels: Record<string, string> = {
     d: "Hari",
@@ -47,36 +47,40 @@ export default function Countdown() {
 
   return (
     <section id="countdown" className="pt-10 pb-6 text-center fade-in">
-      <h2 className="text-xl font-semibold mb-4 text-[#4a3f35] tracking-wide">
+      <h2 className="text-xl font-semibold mb-6 text-[#4a3f35] tracking-wide">
         Hitungan Menuju Hari Bahagia
       </h2>
 
       {finished ? (
-        <div className="text-2xl font-bold text-[#4a3f35]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="text-2xl font-bold text-[#4a3f35]"
+        >
           Alhamdulillah, Hari Bahagia Telah Tiba!
-        </div>
+        </motion.div>
       ) : (
-        <div className="flex justify-center gap-3">
+        <div className="flex justify-center gap-4">
           {Object.entries(time).map(([key, value]) => (
-            <div
+            <motion.div
               key={key}
-              className="bg-white/70 border border-[#d4af37]/40 rounded-xl w-20 py-3 shadow-md"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="bg-gradient-to-b from-white/80 to-white/60 
+                         border border-[#d4af37] rounded-xl w-24 py-4 shadow-lg"
             >
-              <div className="text-2xl font-bold text-[#4a3f35]">{value}</div>
-              <div className="text-[11px] text-[#86755a] tracking-wide">
+              <div className="text-3xl font-bold text-[#4a3f35] drop-shadow-sm">
+                {value}
+              </div>
+              <div className="text-xs mt-1 text-[#86755a] tracking-widest uppercase">
                 {labels[key]}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
-
-      <Link
-        href="/details"
-        className="inline-block mt-16 bg-[#d4af37] text-black px-6 py-2 rounded-full font-semibold shadow-lg text-sm hover:shadow-xl transition"
-      >
-        Lihat Undangan
-      </Link>
     </section>
   );
 }
