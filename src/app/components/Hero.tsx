@@ -23,11 +23,11 @@ export default function Hero() {
           className="mb-6"
         >
           <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto" />
-          <div className="w-56 h-36 mx-auto overflow-hidden">
+          <div className="w-56 mx-auto overflow-hidden">
             <img
               src="/images/bismillah.png"
               alt="Bismillah"
-              className="w-full h-full object-cover opacity-90"
+              className="py-4 opacity-90"
             />
           </div>
 

@@ -5,7 +5,6 @@
 import Hero from "@/app/components/Hero";
 import Countdown from "@/app/components/Countdown";
 import SwipeHint from "@/app/components/SwipeHint";
-import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function Page() {
