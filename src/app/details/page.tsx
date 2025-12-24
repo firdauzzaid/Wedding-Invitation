@@ -48,10 +48,10 @@ export default function Page() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-20 z-10 right-10 w-16 h-16 border-2 border-[#d4af37]/20 rounded-full"
+        className="absolute flex top-20 z-10 right-10 w-16 h-16 border-2 border-[#d4af37]/20 rounded-full"
       />
 
-      <div className="px-4 py-8 relative">
+      <div className="px-4 py-8 relative flex flex-col items-center">
         {/* MAIN GLASS CARD */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}

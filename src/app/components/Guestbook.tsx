@@ -2,9 +2,16 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Users, CheckCircle, MessageCircle, Send, Heart } from "lucide-react";
+import {
+  User,
+  Users,
+  CheckCircle,
+  MessageCircle,
+  Send,
+  Heart,
+} from "lucide-react";
 
 /**
  * ===============================
@@ -77,6 +84,7 @@ function Toast({ message, type, onClose }: ToastProps) {
  * ===============================
  */
 export default function Guestbook() {
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
 
@@ -86,6 +94,11 @@ export default function Guestbook() {
     attendance: "Hadir",
     message: "",
   });
+
+  // Ensure component is mounted before rendering animations
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   /**
    * ===============================
@@ -131,7 +144,7 @@ export default function Guestbook() {
       }
 
       showToast("Terima kasih! Konfirmasi Anda telah dikirim. 💝", "success");
-      
+
       // Reset form after successful submission
       setForm({
         name: "",
@@ -146,6 +159,15 @@ export default function Guestbook() {
       setLoading(false);
     }
   };
+
+  // Show loading state while mounting
+  if (!mounted) {
+    return (
+      <div className="w-full min-h-[400px] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]"></div>
+      </div>
+    );
+  }
 
   /**
    * ===============================
@@ -249,59 +271,68 @@ export default function Guestbook() {
           </div>
 
           {/* Guests - Only show if attending */}
-          {form.attendance === "Hadir" && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="space-y-2"
-            >
-              <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
-                <Users className="w-4 h-4 text-[#d4af37]" />
-                Jumlah Tamu
-              </label>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleChange("guests", Math.max(1, form.guests - 1))}
-                  disabled={loading || form.guests <= 1}
-                  className="w-12 h-12 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl font-bold text-[#4a3f35] hover:bg-[#d4af37] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  −
-                </button>
-                <input
-                  type="number"
-                  min={1}
-                  max={10}
-                  value={form.guests}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value) || 1;
-                    handleChange("guests", Math.max(1, Math.min(10, val)));
-                  }}
-                  className="flex-1 p-4 text-center text-2xl font-bold bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition text-[#4a3f35]"
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => handleChange("guests", Math.min(10, form.guests + 1))}
-                  disabled={loading || form.guests >= 10}
-                  className="w-12 h-12 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl font-bold text-[#4a3f35] hover:bg-[#d4af37] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  +
-                </button>
-              </div>
-              <p className="text-xs text-[#86755a] italic text-center">
-                Maksimal 10 tamu per konfirmasi
-              </p>
-            </motion.div>
-          )}
+          <AnimatePresence mode="wait">
+            {form.attendance === "Hadir" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-2"
+              >
+                <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
+                  <Users className="w-4 h-4 text-[#d4af37]" />
+                  Jumlah Tamu
+                </label>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleChange("guests", Math.max(1, form.guests - 1))
+                    }
+                    disabled={loading || form.guests <= 1}
+                    className="w-12 h-12 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl font-bold text-[#4a3f35] hover:bg-[#d4af37] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    −
+                  </button>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={form.guests}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value) || 1;
+                      handleChange("guests", Math.max(1, Math.min(10, val)));
+                    }}
+                    className="flex-1 p-4 text-center text-2xl font-bold bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition text-[#4a3f35]"
+                    disabled={loading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleChange("guests", Math.min(10, form.guests + 1))
+                    }
+                    disabled={loading || form.guests >= 10}
+                    className="w-12 h-12 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl font-bold text-[#4a3f35] hover:bg-[#d4af37] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="text-xs text-[#86755a] italic text-center">
+                  Maksimal 10 tamu per konfirmasi
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* Message */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
               <MessageCircle className="w-4 h-4 text-[#d4af37]" />
               Pesan & Ucapan
-              <span className="text-xs text-[#86755a] font-normal">(Opsional)</span>
+              <span className="text-xs text-[#86755a] font-normal">
+                (Opsional)
+              </span>
             </label>
             <textarea
               rows={5}
@@ -336,7 +367,8 @@ export default function Guestbook() {
 
           {/* Info Text */}
           <p className="text-xs text-center text-[#86755a] italic">
-            Dengan mengirim konfirmasi ini, Anda menyetujui untuk hadir atau memberitahu ketidakhadiran Anda
+            Dengan mengirim konfirmasi ini, Anda menyetujui untuk hadir atau
+            memberitahu ketidakhadiran Anda
           </p>
         </motion.div>
       </div>
