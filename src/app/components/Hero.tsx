@@ -35,15 +35,22 @@ export default function Hero() {
         </motion.div>
 
         {/* QUOTE */}
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-sm text-[#86755a] italic mb-8 max-w-md leading-relaxed"
+          className="mb-8 max-w-md"
         >
-          "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu
-          pasangan hidup dari jenismu sendiri"
-        </motion.p>
+          <p className="text-sm text-[#86755a] italic leading-relaxed text-justify">
+            "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan
+            untukmu istri-istri dari jenismu sendiri, supaya kamu cenderung dan
+            merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih
+            dan sayang.."
+          </p>
+          <p className="text-xs text-[#a08968] mt-2 font-serif tracking-wide">
+            (QS. Ar-Rum : 21)
+          </p>
+        </motion.div>
 
         {/* NAMES dengan animasi */}
         <motion.div
@@ -61,7 +68,7 @@ export default function Hero() {
               FIRDAUS
             </span>
             <span className="block text-sm mt-2 text-gray-500 font-normal">
-              Putra dari Bapak Kandar Wibowo
+              Putra dari Bapak Kandar Wibowo dan Ibu Nur Anita
             </span>
           </div>
 
@@ -79,7 +86,7 @@ export default function Hero() {
               ZAHRA
             </span>
             <span className="block text-sm mt-2 text-gray-500 font-normal">
-              Putri dari Bapak Liga Bogi Agustian
+              Putri dari Bapak Liga Bogi Agustian dan Ibu Shinta Kemala Dewi
             </span>
           </div>
         </motion.div>

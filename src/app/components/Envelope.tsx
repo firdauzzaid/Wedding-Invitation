@@ -134,7 +134,7 @@ function Envelope({ guestName, onOpen }: EnvelopeProps) {
 
                 {/* Shimmer overlay on hover */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transition-opacity duration-500 ${
+                  className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/120 to-transparent transition-opacity duration-500 ${
                     isHovering ? "opacity-100" : "opacity-0"
                   }`}
                   style={{
@@ -144,7 +144,7 @@ function Envelope({ guestName, onOpen }: EnvelopeProps) {
                 />
 
                 {/* Top Section - Envelope Flap Area */}
-                <div className="relative pt-14 pb-24 px-5 text-center">
+                <div className="relative pt-14 pb-20 px-5 text-center">
                   {/* Decorative Top Border */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
 
@@ -261,13 +261,9 @@ function Envelope({ guestName, onOpen }: EnvelopeProps) {
 
                   {/* Guest Information */}
                   <div className="space-y-4 mb-7">
-                    <p className="text-gray-600 text-sm font-light tracking-wide">
-                      kami mengundang
-                    </p>
-
                     <div className="py-3">
-                      <p className="text-gray-500 text-[11px] mb-1 tracking-widest uppercase font-medium">
-                        Kepada YTH.
+                      <p className="text-gray-500 text-[11px] mb-1 tracking-widest font-medium">
+                        Kepada Yth.
                       </p>
                       <p className="text-gray-400 text-xs mb-3 italic">
                         Bapak/Ibu/Saudara/i
@@ -280,10 +276,6 @@ function Envelope({ guestName, onOpen }: EnvelopeProps) {
                         </p>
                       </div>
                     </div>
-
-                    <p className="text-gray-600 text-sm font-light leading-relaxed">
-                      Untuk menghadiri acara pernikahan kami
-                    </p>
                   </div>
 
                   {/* Date with enhanced decoration */}

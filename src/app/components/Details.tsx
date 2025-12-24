@@ -15,17 +15,19 @@ export default function Details() {
       title: "Akad Nikah",
       date: "Jumat, 2 Januari 2026",
       time: "09:00 WIB",
-      location: "Gedung Seruni",
-      address: "Jl. Mawar No.12, Jakarta",
-      icon: "🤲",
+      location: "Rumah Mempelai Wanita",
+      address: "Musikanan Pb 1/80, Panembahan, Kraton, Yogyakarta",
+      icon: "images/WeddingCouple.png",
+      note: null,
     },
     {
-      title: "Resepsi",
+      title: "Tasyakuran Pernikahan",
       date: "Jumat, 2 Januari 2026",
-      time: "11:00 – 14:00 WIB",
-      location: "Ballroom Lantai 2",
-      address: "Gedung Seruni, Jakarta",
-      icon: "💐",
+      time: "16:00 WIB",
+      location: "Rumah Mempelai Wanita",
+      address: "Musikanan Pb 1/80, Panembahan, Kraton, Yogyakarta",
+      icon: "images/gate.png",
+      note: "(khusus perempuan)",
     },
   ];
 
@@ -40,7 +42,7 @@ export default function Details() {
       >
         <div className="flex items-center justify-center gap-3 mb-3">
           <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-[#d4af37]" />
-          <div className="w-2 h-2 rounded-full bg-[#d4af37]" />
+          <div className="w-3 h-3 rounded-full bg-[#d4af37]" />
           <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-[#d4af37]" />
         </div>
 
@@ -53,13 +55,13 @@ export default function Details() {
           </h3>
 
           <p className="text-sm text-[#86755a] mt-2 italic">
-            Dengan memohon rahmat dan ridho Allah SWT
+            Dengan memohon rahmat dan ridho <br /> Allah Subhanahu Wa Ta'ala
           </p>
         </div>
       </motion.div>
 
       {/* Event Cards */}
-      <div className="space-y-6">
+      <div className="space-y-4">
         {events.map((event, index) => (
           <motion.div
             key={index}
@@ -69,15 +71,30 @@ export default function Details() {
             className="relative bg-gradient-to-br from-[#d4af37]/10 to-transparent rounded-2xl border border-[#d4af37]/20 p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex flex-col items-center gap-4"
           >
             {/* Icon */}
-            <div className="text-4xl mb-3 text-center">{event.icon}</div>
+            <div className="text-6xl mb-2 text-center">
+               <img
+                src={event.icon}
+                alt={event.title}
+                className="w-40 h-40 object-contain"
+              />
+            </div>
 
-            {/* Title */}
-            <h4
-              className="text-2xl font-bold text-[#4a3f35] text-center mb-4"
-              style={playfairStyle}
-            >
-              {event.title}
-            </h4>
+            <div className="text-center mb-4">
+              {/* Title */}
+              <h4
+                className="text-2xl font-bold text-[#4a3f35] text-center"
+                style={playfairStyle}
+              >
+                {event.title}
+              </h4>
+
+              {/* Note */}
+              {event.note && (
+                <p className="text-xs text-[#86755a] italic mt-1">
+                  {event.note}
+                </p>
+              )}
+            </div>
 
             {/* Details */}
             <div className="space-y-3">

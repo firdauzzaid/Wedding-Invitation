@@ -25,7 +25,7 @@ export default function Splash({ children }: { children: React.ReactNode }) {
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.1 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          transition={{ duration: 5, ease: "easeInOut" }}
           className="fixed inset-0 z-[9999] flex items-center justify-center flex-col overflow-hidden"
         >
           {/* Background image dengan blend */}
@@ -270,7 +270,7 @@ export default function Splash({ children }: { children: React.ReactNode }) {
                   textShadow: "0 2px 20px rgba(212, 175, 55, 0.15)",
                 }}
               >
-                Undangan Pernikahan
+                Z & A
               </motion.h1>
 
               <motion.div

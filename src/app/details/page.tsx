@@ -82,13 +82,6 @@ export default function Page() {
           {/* Details Section */}
           <Details />
 
-          {/* Elegant Divider */}
-          <div className="flex items-center justify-center gap-4 py-4">
-            <div className="w-20 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent" />
-            <div className="w-3 h-3 border-2 border-[#d4af37] rotate-45" />
-            <div className="w-20 h-[1px] bg-gradient-to-l from-transparent via-[#d4af37] to-transparent" />
-          </div>
-
           {/* Map Section */}
           <MapLocation />
         </motion.div>

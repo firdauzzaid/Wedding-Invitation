@@ -25,9 +25,9 @@ export default function MapLocation() {
     >
       {/* Header */}
       <div className="text-center mb-6">
-        <div className="flex items-center justify-center gap-3 mb-3">
+        <div className="flex items-center justify-center gap-3 mb-3 py-4">
           <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-[#d4af37]" />
-          <MapPin className="w-5 h-5 text-[#d4af37]" />
+          <MapPin className="w-4 h-4 text-[#d4af37]" />
           <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-[#d4af37]" />
         </div>
         
