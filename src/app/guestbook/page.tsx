@@ -2,10 +2,35 @@
 
 "use client";
 
-import Guestbook from "@/app/components/Guestbook";
+import { Suspense, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 
+// Dynamic import Guestbook component
+const Guestbook = dynamic(() => import("@/app/components/Guestbook"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]"></div>
+    </div>
+  ),
+});
+
 export default function Page() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fdfcfb] via-[#f9f7f1] to-[#f5f1e8]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#fdfcfb] via-[#f9f7f1] to-[#f5f1e8]">
       {/* Background Pattern */}
@@ -76,7 +101,15 @@ export default function Page() {
           <div className="absolute bottom-0 left-0 w-20 h-20 border-b-2 border-l-2 border-[#d4af37]/40 rounded-bl-[2rem]" />
           <div className="absolute bottom-0 right-0 w-20 h-20 border-b-2 border-r-2 border-[#d4af37]/40 rounded-br-[2rem]" />
 
-          <Guestbook />
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]"></div>
+              </div>
+            }
+          >
+            <Guestbook />
+          </Suspense>
         </motion.div>
       </div>
 
