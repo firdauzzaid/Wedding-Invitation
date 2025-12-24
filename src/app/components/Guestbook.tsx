@@ -164,17 +164,17 @@ export default function Guestbook() {
         )}
       </AnimatePresence>
 
-      <div className="w-full space-y-6">
+      <div className="space-y-8 pt-12 pb-4">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center"
+          className="text-center flex flex-col items-center justify-center gap-6 mb-6"
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-[#d4af37]" />
-            <Heart className="w-6 h-6 text-[#d4af37] fill-[#d4af37]" />
+            <Heart className="w-3 h-3 text-[#d4af37] fill-[#d4af37]" />
             <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-[#d4af37]" />
           </div>
 
