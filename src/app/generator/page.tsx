@@ -19,7 +19,7 @@ export default function GeneratorPage() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   // Password yang bisa Anda ubah sesuai kebutuhan
-  const ADMIN_PASSWORD = "wedding2024"; // Ganti dengan password Anda
+  const ADMIN_PASSWORD = "znonymous#1998"; // Ganti dengan password Anda
 
   useEffect(() => {
     setMounted(true);
@@ -251,9 +251,6 @@ export default function GeneratorPage() {
         <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 mb-6 border border-white/20">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-lg">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">
                   Wedding Link Generator
