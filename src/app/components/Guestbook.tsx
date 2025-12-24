@@ -4,7 +4,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, Users, CheckCircle, MessageCircle, Send } from "lucide-react";
+import { User, Users, CheckCircle, MessageCircle, Send, Heart } from "lucide-react";
 
 /**
  * ===============================
@@ -59,7 +59,14 @@ function Toast({ message, type, onClose }: ToastProps) {
         }`}
       onClick={onClose}
     >
-      <p className="font-medium">{message}</p>
+      <div className="flex items-center gap-2">
+        {type === "success" ? (
+          <CheckCircle className="w-5 h-5" />
+        ) : (
+          <MessageCircle className="w-5 h-5" />
+        )}
+        <p className="font-medium">{message}</p>
+      </div>
     </motion.div>
   );
 }
@@ -98,8 +105,14 @@ export default function Guestbook() {
   };
 
   const handleSubmit = async () => {
+    // Validation
     if (!form.name.trim()) {
       showToast("Nama wajib diisi", "error");
+      return;
+    }
+
+    if (form.guests < 1) {
+      showToast("Jumlah tamu minimal 1", "error");
       return;
     }
 
@@ -112,17 +125,23 @@ export default function Guestbook() {
         body: JSON.stringify(form),
       });
 
-      if (!res.ok) throw new Error("Request failed");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || "Request failed");
+      }
 
-      showToast("Terima kasih! Konfirmasi Anda telah dikirim.", "success");
+      showToast("Terima kasih! Konfirmasi Anda telah dikirim. 💝", "success");
+      
+      // Reset form after successful submission
       setForm({
         name: "",
         guests: 1,
         attendance: "Hadir",
         message: "",
       });
-    } catch {
-      showToast("Gagal mengirim, coba lagi.", "error");
+    } catch (error) {
+      console.error("Submission error:", error);
+      showToast("Gagal mengirim konfirmasi. Silakan coba lagi.", "error");
     } finally {
       setLoading(false);
     }
@@ -155,7 +174,7 @@ export default function Guestbook() {
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-[#d4af37]" />
-            <MessageCircle className="w-6 h-6 text-[#d4af37]" />
+            <Heart className="w-6 h-6 text-[#d4af37] fill-[#d4af37]" />
             <div className="w-12 h-[1px] bg-gradient-to-l from-transparent to-[#d4af37]" />
           </div>
 
@@ -182,56 +201,143 @@ export default function Guestbook() {
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
               <User className="w-4 h-4 text-[#d4af37]" />
-              Nama Lengkap
+              Nama Lengkap <span className="text-red-500">*</span>
             </label>
             <input
+              type="text"
               value={form.name}
               onChange={(e) => handleChange("name", e.target.value)}
               placeholder="Masukkan nama Anda"
-              className="w-full p-4 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl"
+              className="w-full p-4 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition text-[#4a3f35] placeholder-[#86755a]/50"
+              disabled={loading}
+              required
             />
           </div>
 
-          {/* Guests */}
+          {/* Attendance Status */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
-              <Users className="w-4 h-4 text-[#d4af37]" />
-              Jumlah Tamu
+              <CheckCircle className="w-4 h-4 text-[#d4af37]" />
+              Status Kehadiran <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
-              min={1}
-              value={form.guests}
-              onChange={(e) =>
-                handleChange("guests", Number(e.target.value))
-              }
-              className="w-full p-4 text-center bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl"
-            />
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => handleChange("attendance", "Hadir")}
+                disabled={loading}
+                className={`p-4 rounded-xl font-semibold transition ${
+                  form.attendance === "Hadir"
+                    ? "bg-gradient-to-r from-[#d4af37] to-[#e6c85c] text-white shadow-lg"
+                    : "bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 text-[#4a3f35] hover:border-[#d4af37]/50"
+                }`}
+              >
+                ✓ Hadir
+              </button>
+              <button
+                type="button"
+                onClick={() => handleChange("attendance", "Berhalangan hadir")}
+                disabled={loading}
+                className={`p-4 rounded-xl font-semibold transition ${
+                  form.attendance === "Berhalangan hadir"
+                    ? "bg-gradient-to-r from-[#d4af37] to-[#e6c85c] text-white shadow-lg"
+                    : "bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 text-[#4a3f35] hover:border-[#d4af37]/50"
+                }`}
+              >
+                ✗ Berhalangan
+              </button>
+            </div>
           </div>
+
+          {/* Guests - Only show if attending */}
+          {form.attendance === "Hadir" && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="space-y-2"
+            >
+              <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
+                <Users className="w-4 h-4 text-[#d4af37]" />
+                Jumlah Tamu
+              </label>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleChange("guests", Math.max(1, form.guests - 1))}
+                  disabled={loading || form.guests <= 1}
+                  className="w-12 h-12 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl font-bold text-[#4a3f35] hover:bg-[#d4af37] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  min={1}
+                  max={10}
+                  value={form.guests}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 1;
+                    handleChange("guests", Math.max(1, Math.min(10, val)));
+                  }}
+                  className="flex-1 p-4 text-center text-2xl font-bold bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl focus:border-[#d4af37] focus:outline-none transition text-[#4a3f35]"
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleChange("guests", Math.min(10, form.guests + 1))}
+                  disabled={loading || form.guests >= 10}
+                  className="w-12 h-12 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl font-bold text-[#4a3f35] hover:bg-[#d4af37] hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  +
+                </button>
+              </div>
+              <p className="text-xs text-[#86755a] italic text-center">
+                Maksimal 10 tamu per konfirmasi
+              </p>
+            </motion.div>
+          )}
 
           {/* Message */}
           <div className="space-y-2">
             <label className="flex items-center gap-2 text-sm font-semibold text-[#4a3f35]">
               <MessageCircle className="w-4 h-4 text-[#d4af37]" />
               Pesan & Ucapan
+              <span className="text-xs text-[#86755a] font-normal">(Opsional)</span>
             </label>
             <textarea
               rows={5}
               value={form.message}
               onChange={(e) => handleChange("message", e.target.value)}
-              className="w-full p-4 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl resize-none"
+              placeholder="Tuliskan ucapan dan doa untuk kami..."
+              className="w-full p-4 bg-white/40 backdrop-blur-sm border-2 border-[#d4af37]/30 rounded-xl resize-none focus:border-[#d4af37] focus:outline-none transition text-[#4a3f35] placeholder-[#86755a]/50"
+              disabled={loading}
             />
           </div>
 
-          {/* Submit */}
+          {/* Submit Button */}
           <motion.button
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full py-4 bg-gradient-to-r from-[#d4af37] to-[#e6c85c] rounded-xl font-bold"
+            className="w-full py-4 bg-gradient-to-r from-[#d4af37] to-[#e6c85c] rounded-xl font-bold text-white shadow-lg hover:shadow-xl transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {loading ? "Mengirim..." : "Kirim Konfirmasi"}
+            {loading ? (
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Mengirim...
+              </>
+            ) : (
+              <>
+                <Send className="w-5 h-5" />
+                Kirim Konfirmasi
+              </>
+            )}
           </motion.button>
+
+          {/* Info Text */}
+          <p className="text-xs text-center text-[#86755a] italic">
+            Dengan mengirim konfirmasi ini, Anda menyetujui untuk hadir atau memberitahu ketidakhadiran Anda
+          </p>
         </motion.div>
       </div>
     </>
