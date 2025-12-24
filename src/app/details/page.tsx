@@ -40,15 +40,27 @@ export default function Page() {
       {/* Floating ornaments */}
       <motion.div
         animate={{
-          y: [0, -20, 0],
+          y: [0, -15, 0],
           rotate: [0, 5, 0],
         }}
         transition={{
-          duration: 6,
+          duration: 5,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute flex top-20 z-10 right-10 w-16 h-16 border-2 border-[#d4af37]/20 rounded-full"
+        className="absolute top-20 z-10 right-12 w-16 h-16 border-2 border-[#d4af37]/20 rounded-full"
+      />
+      <motion.div
+        animate={{
+          y: [0, 15, 0],
+          rotate: [0, -5, 0],
+        }}
+        transition={{
+          duration: 7,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-10 z-10 right-10 w-12 h-12 border-2 border-[#d4af37]/20 rounded-full"
       />
 
       <div className="px-4 py-8 relative flex flex-col items-center">

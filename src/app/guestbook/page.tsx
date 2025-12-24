@@ -72,7 +72,7 @@ export default function Page() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-10 left-10 w-16 h-16 border-2 border-[#d4af37]/20 rounded-full"
+        className="absolute top-20 z-10 right-12 w-16 h-16 border-2 border-[#d4af37]/20 rounded-full"
       />
       <motion.div
         animate={{
@@ -84,7 +84,7 @@ export default function Page() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute bottom-20 right-10 w-12 h-12 border-2 border-[#d4af37]/20 rounded-full"
+        className="absolute top-10 z-10 right-10 w-12 h-12 border-2 border-[#d4af37]/20 rounded-full"
       />
 
       <div className="px-4 pt-6 pb-24 max-w-xl mx-auto relative">
