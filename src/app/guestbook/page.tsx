@@ -6,7 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 
-// Dynamic import Guestbook component
+// Dynamic import components
 const Guestbook = dynamic(() => import("@/app/components/Guestbook"), {
   ssr: false,
   loading: () => (
@@ -14,6 +14,11 @@ const Guestbook = dynamic(() => import("@/app/components/Guestbook"), {
       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#d4af37]"></div>
     </div>
   ),
+});
+
+const BankAccount = dynamic(() => import("@/app/components/BankAccount"), {
+  ssr: false,
+  loading: () => null,
 });
 
 export default function Page() {
@@ -87,13 +92,13 @@ export default function Page() {
         className="absolute top-10 z-10 right-10 w-12 h-12 border-2 border-[#d4af37]/20 rounded-full"
       />
 
-      <div className="px-4 pt-6 pb-24 max-w-xl mx-auto relative">
-        {/* MAIN GLASS CARD */}
+      <div className="px-4 pt-6 pb-24 max-w-5xl mx-auto relative">
+        {/* GUESTBOOK FORM */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative bg-white/30 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-2xl p-8 md:p-10"
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative bg-white/30 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-2xl p-8 md:p-10 max-w-xl mx-auto"
         >
           {/* Decorative corners */}
           <div className="absolute top-0 left-0 w-20 h-20 border-t-2 border-l-2 border-[#d4af37]/40 rounded-tl-[2rem]" />
@@ -109,6 +114,11 @@ export default function Page() {
             }
           >
             <Guestbook />
+          </Suspense>
+
+          {/* BANK ACCOUNT SECTION (VIP Only) */}
+          <Suspense fallback={null}>
+            <BankAccount />
           </Suspense>
         </motion.div>
       </div>
