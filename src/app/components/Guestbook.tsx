@@ -318,9 +318,6 @@ export default function Guestbook() {
                     +
                   </button>
                 </div>
-                <p className="text-xs text-[#86755a] italic text-center">
-                  Maksimal 10 tamu per konfirmasi
-                </p>
               </motion.div>
             )}
           </AnimatePresence>
