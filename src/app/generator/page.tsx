@@ -3,7 +3,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Lock, Unlock, Eye, EyeOff, Sparkles, Link2, Download, Copy, Trash2, Users, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, Unlock, Eye, EyeOff, Sparkles, Link2, Download, Copy, Trash2, Users, CheckCircle2, AlertCircle, Crown } from "lucide-react";
 
 export default function GeneratorPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,16 +14,19 @@ export default function GeneratorPage() {
 
   const [baseUrl, setBaseUrl] = useState("");
   const [guestList, setGuestList] = useState("");
-  const [generatedData, setGeneratedData] = useState<Array<{ name: string; url: string }>>([]);
+  const [generatedData, setGeneratedData] = useState<Array<{ name: string; url: string; isVIP: boolean }>>([]);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // Daftar kode VIP yang tersedia
+  const VIP_CODES = ["VIP001", "VIP002"];
+  const [nextVIPCode, setNextVIPCode] = useState("VIP001");
+
   // Password yang bisa Anda ubah sesuai kebutuhan
-  const ADMIN_PASSWORD = "znonymous#1998"; // Ganti dengan password Anda
+  const ADMIN_PASSWORD = "znonymous#1998";
 
   useEffect(() => {
     setMounted(true);
-    // Cek apakah sudah pernah login di session ini
     const sessionAuth = sessionStorage.getItem("weddingAuth");
     if (sessionAuth === "true") {
       setIsAuthenticated(true);
@@ -86,11 +89,27 @@ export default function GeneratorPage() {
     setIsGenerating(true);
     setTimeout(() => {
       const guests = guestList.split("\n").filter((name) => name.trim() !== "");
+      let vipCodeIndex = 0;
+      
       const data = guests.map((name) => {
         const trimmedName = name.trim();
-        const encodedName = encodeURIComponent(trimmedName);
-        const url = `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}to=${encodedName}`;
-        return { name: trimmedName, url };
+        
+        // Cek apakah nama diawali dengan [VIP] atau (VIP)
+        const isVIP = /^\[VIP\]|\(VIP\)/i.test(trimmedName);
+        const cleanName = trimmedName.replace(/^\[VIP\]|\(VIP\)\s*/i, '').trim();
+        
+        const encodedName = encodeURIComponent(cleanName);
+        
+        // Jika VIP, tambahkan kode VIP
+        let url = `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}to=${encodedName}`;
+        
+        if (isVIP) {
+          const vipCode = VIP_CODES[vipCodeIndex % VIP_CODES.length];
+          url += `&code=${vipCode}`;
+          vipCodeIndex++;
+        }
+        
+        return { name: cleanName, url, isVIP };
       });
 
       setGeneratedData(data);
@@ -108,7 +127,7 @@ export default function GeneratorPage() {
 
   const copyAllLinks = () => {
     const allLinks = generatedData
-      .map((item) => `${item.name}: ${item.url}`)
+      .map((item) => `${item.isVIP ? '👑 ' : ''}${item.name}: ${item.url}`)
       .join("\n\n");
 
     navigator.clipboard.writeText(allLinks).then(() => {
@@ -120,7 +139,7 @@ export default function GeneratorPage() {
     const content = generatedData
       .map(
         (item) =>
-          `Nama: ${item.name}\nLink: ${item.url}\n${"=".repeat(60)}`
+          `${item.isVIP ? '👑 VIP - ' : ''}Nama: ${item.name}\nLink: ${item.url}\n${"=".repeat(60)}`
       )
       .join("\n\n");
 
@@ -128,9 +147,9 @@ export default function GeneratorPage() {
   };
 
   const downloadAsCSV = () => {
-    const header = "Nama,Link Undangan\n";
+    const header = "Nama,Link Undangan,Status\n";
     const rows = generatedData
-      .map((item) => `"${item.name}","${item.url}"`)
+      .map((item) => `"${item.name}","${item.url}","${item.isVIP ? 'VIP' : 'Regular'}"`)
       .join("\n");
 
     downloadFile("daftar-undangan.csv", header + rows);
@@ -238,6 +257,9 @@ export default function GeneratorPage() {
   }
 
   // Main Generator Screen
+  const vipCount = generatedData.filter(item => item.isVIP).length;
+  const regularCount = generatedData.length - vipCount;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-900 py-12 px-4 relative overflow-hidden">
       {/* Animated background */}
@@ -255,7 +277,7 @@ export default function GeneratorPage() {
                 <h1 className="text-3xl font-bold text-white">
                   Wedding Link Generator
                 </h1>
-                <p className="text-purple-200 text-sm">Premium Edition</p>
+                <p className="text-purple-200 text-sm">Premium Edition with VIP Support</p>
               </div>
             </div>
             <button
@@ -295,15 +317,30 @@ export default function GeneratorPage() {
               <Users className="w-4 h-4" />
               Daftar Nama Tamu (Satu nama per baris)
             </label>
+            
+            {/* VIP Instructions */}
+            <div className="bg-amber-500/10 backdrop-blur-sm border border-amber-400/20 rounded-xl p-4 mb-4">
+              <div className="flex items-start gap-3">
+                <Crown className="w-5 h-5 text-amber-300 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-amber-100">
+                  <p className="font-semibold mb-1">💡 Tips untuk Tamu VIP:</p>
+                  <p>Tambahkan <span className="bg-amber-500/20 px-2 py-0.5 rounded text-amber-200 font-mono">[VIP]</span> atau <span className="bg-amber-500/20 px-2 py-0.5 rounded text-amber-200 font-mono">(VIP)</span> di awal nama untuk menampilkan gelar akademik</p>
+                  <p className="mt-2 text-xs text-amber-200">
+                    Contoh: <span className="font-mono">[VIP] Prof. Dr. Ahmad Wijaya</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <textarea
               value={guestList}
               onChange={(e) => setGuestList(e.target.value)}
-              placeholder="Bapak Ahmad Wijaya&#10;Ibu Siti Nurhaliza&#10;Saudara Budi Santoso&#10;Keluarga Pak Rahman&#10;Teman Kantor - Andi"
+              placeholder="Bapak Ahmad Wijaya&#10;[VIP] Prof. Dr. Siti Nurhaliza&#10;(VIP) Dr. Budi Santoso, M.Sc&#10;Keluarga Pak Rahman&#10;Teman Kantor - Andi"
               className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/20 rounded-xl focus:border-purple-400 focus:outline-none transition font-mono text-sm text-white placeholder-purple-200"
               rows={10}
             />
             <p className="text-xs text-purple-200 mt-2 italic">
-              Tips: Gunakan format yang jelas seperti "Bapak/Ibu [Nama]" atau "Keluarga [Nama]"
+              Tips: Gunakan format yang jelas. Tambahkan [VIP] untuk tamu yang akan melihat gelar akademik
             </p>
           </div>
 
@@ -338,15 +375,37 @@ export default function GeneratorPage() {
         {/* Output Section */}
         {generatedData.length > 0 && (
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20">
-            {/* Stats Card */}
-            <div className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-sm rounded-2xl p-6 text-center mb-6 border border-emerald-300/20">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <CheckCircle2 className="w-10 h-10 text-emerald-300" />
-                <div className="text-5xl font-bold text-white">
-                  {generatedData.length}
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <div className="bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-sm rounded-2xl p-6 text-center border border-emerald-300/20">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-300" />
+                  <div className="text-4xl font-bold text-white">
+                    {generatedData.length}
+                  </div>
                 </div>
+                <div className="text-sm text-emerald-100 font-semibold">Total Undangan</div>
               </div>
-              <div className="text-sm text-emerald-100 font-semibold">Total Tamu Undangan Berhasil Dibuat</div>
+
+              <div className="bg-gradient-to-r from-amber-500/20 to-yellow-500/20 backdrop-blur-sm rounded-2xl p-6 text-center border border-amber-300/20">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <Crown className="w-8 h-8 text-amber-300" />
+                  <div className="text-4xl font-bold text-white">
+                    {vipCount}
+                  </div>
+                </div>
+                <div className="text-sm text-amber-100 font-semibold">Tamu VIP</div>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-500/20 to-indigo-500/20 backdrop-blur-sm rounded-2xl p-6 text-center border border-blue-300/20">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <Users className="w-8 h-8 text-blue-300" />
+                  <div className="text-4xl font-bold text-white">
+                    {regularCount}
+                  </div>
+                </div>
+                <div className="text-sm text-blue-100 font-semibold">Tamu Regular</div>
+              </div>
             </div>
 
             {/* Links List */}
@@ -354,11 +413,19 @@ export default function GeneratorPage() {
               {generatedData.map((item, index) => (
                 <div
                   key={index}
-                  className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 border border-white/10 hover:bg-white/15 transition"
+                  className={`backdrop-blur-sm rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3 border transition ${
+                    item.isVIP 
+                      ? 'bg-amber-500/10 border-amber-400/30 hover:bg-amber-500/15' 
+                      : 'bg-white/10 border-white/10 hover:bg-white/15'
+                  }`}
                 >
                   <div className="font-semibold text-white sm:min-w-[200px] flex items-center gap-2">
-                    <div className="w-8 h-8 bg-purple-500/30 rounded-lg flex items-center justify-center text-xs font-bold text-purple-200">
-                      {index + 1}
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold ${
+                      item.isVIP 
+                        ? 'bg-amber-500/30 text-amber-200' 
+                        : 'bg-purple-500/30 text-purple-200'
+                    }`}>
+                      {item.isVIP ? <Crown className="w-4 h-4" /> : index + 1}
                     </div>
                     {item.name}
                   </div>
@@ -373,6 +440,8 @@ export default function GeneratorPage() {
                     className={`${
                       copiedIndex === index
                         ? "bg-green-500"
+                        : item.isVIP 
+                        ? "bg-amber-500 hover:bg-amber-600"
                         : "bg-purple-500 hover:bg-purple-600"
                     } text-white text-sm font-medium py-2 px-4 rounded-lg transition whitespace-nowrap flex items-center gap-2 shadow-lg`}
                   >

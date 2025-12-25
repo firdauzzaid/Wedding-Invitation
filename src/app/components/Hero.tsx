@@ -2,8 +2,9 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
+import { useInvitation } from "../layout";
 
 // Font configuration (Playfair Display)
 const playfairStyle = {
@@ -12,6 +13,9 @@ const playfairStyle = {
 
 // Komponen Hero
 export default function Hero() {
+  // Ambil data dari context
+  const { isVIP } = useInvitation();
+
   return (
     <section className="relative w-full flex items-center justify-center py-12">
       <div className="relative z-10 px-4 flex flex-col items-center text-center">
@@ -30,7 +34,6 @@ export default function Hero() {
               className="py-4 opacity-90"
             />
           </div>
-
           <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mx-auto" />
         </motion.div>
 
@@ -67,6 +70,18 @@ export default function Hero() {
             <span className="block text-lg mt-2 text-[#86755a] font-light tracking-widest">
               FIRDAUS
             </span>
+            
+            {/* Gelar belakang - muncul jika VIP */}
+            {isVIP && (
+              <motion.span 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="block text-sm text-[#a08968] font-light tracking-wider mt-1"
+              >
+                S.Kom
+              </motion.span>
+            )}
+            
             <span className="block text-sm mt-2 text-gray-500 font-normal">
               Putra dari Bapak Kandar Wibowo dan Ibu Nur Anita
             </span>
@@ -85,6 +100,18 @@ export default function Hero() {
             <span className="block text-lg mt-2 text-[#86755a] font-light tracking-widest">
               ZAHRA
             </span>
+            
+            {/* Gelar belakang - muncul jika VIP */}
+            {isVIP && (
+              <motion.span 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="block text-sm text-[#a08968] font-light tracking-wider mt-1"
+              >
+                S.Psi
+              </motion.span>
+            )}
+            
             <span className="block text-sm mt-2 text-gray-500 font-normal">
               Putri dari Bapak Liga Bogi Agustian dan Ibu Shinta Kemala Dewi
             </span>

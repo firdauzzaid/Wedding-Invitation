@@ -8,13 +8,37 @@ import Splash from './components/Splash';
 import PageTransition from './components/PageTransition';
 import SwipeLayout from './components/SwipeLayout';
 import { Toaster } from "sonner";
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import { usePathname } from "next/navigation";
 import Envelope from "@/app/components/Envelope";
+
+// Context untuk menyimpan data undangan
+interface InvitationContextType {
+  guestName: string;
+  invitationCode: string | null;
+  isVIP: boolean;
+}
+
+const InvitationContext = createContext<InvitationContextType>({
+  guestName: "",
+  invitationCode: null,
+  isVIP: false,
+});
+
+// Hook untuk mengakses context
+export const useInvitation = () => useContext(InvitationContext);
+
+// Daftar kode VIP (sinkronkan dengan Hero.tsx)
+const VIP_CODES = [
+  "VIP001", "VIP002", "VIP003",
+  "SPECIAL01", "SPECIAL02",
+];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [guestName, setGuestName] = useState("");
+  const [invitationCode, setInvitationCode] = useState<string | null>(null);
+  const [isVIP, setIsVIP] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
   // Cek apakah halaman memerlukan envelope
@@ -26,7 +50,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const name = params.get('to');
+    const code = params.get('code');
+    
     setGuestName(name || "Tamu Undangan");
+    setInvitationCode(code);
+    
+    // Cek apakah kode termasuk VIP
+    if (code && VIP_CODES.includes(code.toUpperCase())) {
+      setIsVIP(true);
+    }
     
     // Jika bukan halaman yang perlu envelope, langsung show content
     if (!needsEnvelope) {
@@ -45,43 +77,52 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     );
   }
 
+  // Context value
+  const invitationContextValue = {
+    guestName,
+    invitationCode,
+    isVIP,
+  };
+
   return (
     <html lang="en">
       <body className="bg-gradient-to-b from-[#faf7f2] via-[#f7f2eb] to-[#f4ede3] text-[#4a3f35] overflow-x-hidden font-sans">
-        {needsEnvelope && !showContent && (
-          <Envelope
-            guestName={guestName} 
-            onOpen={() => setShowContent(true)} 
-          />
-        )}
-          
-        {showContent && (
-          <>
-            {/* Splash dan Home */}
-            <Splash>
-              <SwipeLayout>
-                <main className="pt-14 min-h-screen md:pt-16 md:pb-4">
-                  <PageTransition>
-                    {children}
-                    <Toaster richColors position="top-center" />
-                  </PageTransition>
-                </main>
-              </SwipeLayout>
-            </Splash>
-
-            {/* Navbar */}
-            <Navbar
-              className="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-white/40 border-b border-[#d4af37]/30 shadow-md"
+        <InvitationContext.Provider value={invitationContextValue}>
+          {needsEnvelope && !showContent && (
+            <Envelope
+              guestName={guestName} 
+              onOpen={() => setShowContent(true)} 
             />
+          )}
+            
+          {showContent && (
+            <>
+              {/* Splash dan Home */}
+              <Splash>
+                <SwipeLayout>
+                  <main className="pt-14 min-h-screen md:pt-16 md:pb-4">
+                    <PageTransition>
+                      {children}
+                      <Toaster richColors position="top-center" />
+                    </PageTransition>
+                  </main>
+                </SwipeLayout>
+              </Splash>
 
-            {/* Footer */}
-            <footer className="text-center text-[#d4af37]/70 text-xs md:text-sm py-2">
-              <span className="cursor-pointer hover:underline hover:text-[#d4af37] transition-colors duration-300">
-                © 2025 by Zhafron Firdaus. All rights reserved.
-              </span>
-            </footer>
-          </>
-        )}
+              {/* Navbar */}
+              <Navbar
+                className="fixed top-0 left-0 w-full z-50 backdrop-blur-md bg-white/40 border-b border-[#d4af37]/30 shadow-md"
+              />
+
+              {/* Footer */}
+              <footer className="text-center text-[#d4af37]/70 text-xs md:text-sm py-2">
+                <span className="cursor-pointer hover:underline hover:text-[#d4af37] transition-colors duration-300">
+                  © 2025 by Zhafron Firdaus. All rights reserved.
+                </span>
+              </footer>
+            </>
+          )}
+        </InvitationContext.Provider>
       </body>
     </html>
   );
