@@ -84,7 +84,7 @@ export default function BankAccount() {
         </motion.div>
 
         {/* Bank Accounts Grid */}
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col gap-6">
           {/* Mempelai Pria */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
