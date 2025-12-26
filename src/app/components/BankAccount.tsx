@@ -77,13 +77,14 @@ export default function BankAccount() {
             Amplop Digital
           </h2>
           <p className="text-sm md:text-base text-[#86755a] max-w-2xl mx-auto leading-relaxed">
-            Doa restu Anda adalah hadiah terindah bagi kami. Namun jika memberi adalah ungkapan tanda kasih,
-            Anda dapat menggunakan rekening berikut:
+            Doa restu Anda adalah hadiah terindah bagi kami. Namun jika memberi
+            adalah ungkapan tanda kasih, Anda dapat menggunakan rekening
+            berikut:
           </p>
         </motion.div>
 
         {/* Bank Accounts Grid */}
-        <div className="grid md:grid-cols-2 gap-6 mb-6">
+        <div className="flex flex-col md:flex-row gap-6">
           {/* Mempelai Pria */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -98,7 +99,10 @@ export default function BankAccount() {
                   <CreditCard className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#4a3f35]" style={playfairStyle}>
+                  <h3
+                    className="text-lg font-bold text-[#4a3f35]"
+                    style={playfairStyle}
+                  >
                     Mempelai Pria
                   </h3>
                   <p className="text-xs text-[#86755a]">Zhafron Firdaus</p>
@@ -117,7 +121,10 @@ export default function BankAccount() {
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                           <span className="text-blue-600 font-bold text-xs">
-                            {account.bank.split(' ')[1]?.substring(0, 2).toUpperCase()}
+                            {account.bank
+                              .split(" ")[1]
+                              ?.substring(0, 2)
+                              .toUpperCase()}
                           </span>
                         </div>
                         <span className="font-bold text-[#4a3f35] text-sm">
@@ -127,7 +134,9 @@ export default function BankAccount() {
                     </div>
 
                     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 mb-3">
-                      <p className="text-xs text-[#86755a] mb-1">Nomor Rekening</p>
+                      <p className="text-xs text-[#86755a] mb-1">
+                        Nomor Rekening
+                      </p>
                       <p className="text-xl font-bold text-[#4a3f35] tracking-wider font-mono">
                         {account.accountNumber}
                       </p>
@@ -141,7 +150,9 @@ export default function BankAccount() {
                         </p>
                       </div>
                       <button
-                        onClick={() => copyToClipboard(account.accountNumber, index)}
+                        onClick={() =>
+                          copyToClipboard(account.accountNumber, index)
+                        }
                         className={`px-4 py-2 rounded-lg font-medium text-sm transition flex items-center gap-2 ${
                           copiedIndex === index
                             ? "bg-green-500 text-white"
@@ -181,7 +192,10 @@ export default function BankAccount() {
                   <CreditCard className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-[#4a3f35]" style={playfairStyle}>
+                  <h3
+                    className="text-lg font-bold text-[#4a3f35]"
+                    style={playfairStyle}
+                  >
                     Mempelai Wanita
                   </h3>
                   <p className="text-xs text-[#86755a]">Annisa Zahra</p>
@@ -200,7 +214,10 @@ export default function BankAccount() {
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-pink-100 rounded-lg flex items-center justify-center">
                           <span className="text-pink-600 font-bold text-xs">
-                            {account.bank.split(' ')[1]?.substring(0, 2).toUpperCase()}
+                            {account.bank
+                              .split(" ")[1]
+                              ?.substring(0, 2)
+                              .toUpperCase()}
                           </span>
                         </div>
                         <span className="font-bold text-[#4a3f35] text-sm">
@@ -210,7 +227,9 @@ export default function BankAccount() {
                     </div>
 
                     <div className="bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg p-3 mb-3">
-                      <p className="text-xs text-[#86755a] mb-1">Nomor Rekening</p>
+                      <p className="text-xs text-[#86755a] mb-1">
+                        Nomor Rekening
+                      </p>
                       <p className="text-xl font-bold text-[#4a3f35] tracking-wider font-mono">
                         {account.accountNumber}
                       </p>
@@ -224,7 +243,9 @@ export default function BankAccount() {
                         </p>
                       </div>
                       <button
-                        onClick={() => copyToClipboard(account.accountNumber, index + 10)}
+                        onClick={() =>
+                          copyToClipboard(account.accountNumber, index + 10)
+                        }
                         className={`px-4 py-2 rounded-lg font-medium text-sm transition flex items-center gap-2 ${
                           copiedIndex === index + 10
                             ? "bg-green-500 text-white"
@@ -259,9 +280,11 @@ export default function BankAccount() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center"
         >
-          <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-3 border-2 border-amber-200/50 max-w-2xl mx-auto">
+          <div className="mt-6 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl p-3 border-2 border-amber-200/50 max-w-2xl mx-auto">
             <p className="text-sm text-[#86755a] italic leading-relaxed">
-              💝 <strong>Terima kasih atas perhatian dan kehadiran Anda.</strong><br />
+              💝{" "}
+              <strong>Terima kasih atas perhatian dan kehadiran Anda.</strong>
+              <br />
               Doa dan restu Anda adalah hadiah yang paling berharga bagi kami.
             </p>
           </div>
